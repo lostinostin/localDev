@@ -2,6 +2,7 @@ Installing Vagrant
 ==========
 
 Download the relevant package for your specific OS: 
+
 **Windows** [Universal (32 and 64-bit)](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3.msi)
 	
 >If you're using Windows, you may need to log out of your user profile then log back in to get it working.
@@ -16,10 +17,10 @@ Open up your terminal (you can do this by hitting *command+space* at the same ti
 
 `mkdir vagrantUbuntuXenial && cd vagrantUbuntuXenial && vagrant init && vagrant box add box ubuntu/xenial64`
 
-	* This creates a working directory at the root of your home directory called `~/vagrantUbuntuXenial/`, then changes the working directory to that and initializes Vagrant, and finally adds the box `ubuntu/xenial64`.
-	- To destroy this vagrant, you can run `vagrant destroy`
-	- For more information on getting started, head [here](https://www.vagrantup.com/intro/getting-started/index.html)
-	- Here's a [list of available boxes](https://atlas.hashicorp.com/ubuntu/boxes/xenial64)
++ This creates a working directory at the root of your home directory called `~/vagrantUbuntuXenial/`, then changes the working directory to that and initializes Vagrant, and finally adds the box `ubuntu/xenial64`.
++ To destroy this vagrant, you can run `vagrant destroy`
++ For more information on getting started, head [here](https://www.vagrantup.com/intro/getting-started/index.html)
++ Here's a [list of available boxes](https://atlas.hashicorp.com/ubuntu/boxes/xenial64)
 
 Configuring the box
 ==========
