@@ -139,7 +139,7 @@ Configuring the LAMP Stack
 
 Now that you're in, run the following to install the webserver your local WordPress site will be using:
 
-`**ubuntu@ubuntu-xenial:~$** sudo apt-get install -y apache2 mysql-client mysql-server php7.0 php7.0-fpm php7.0-mysql libapache2-mod-php7.0 php7.0-cli php7.0-cgi php7.0-gd`
+**ubuntu@ubuntu-xenial:~$** `sudo apt-get install -y apache2 mysql-client mysql-server php7.0 php7.0-fpm php7.0-mysql libapache2-mod-php7.0 php7.0-cli php7.0-cgi php7.0-gd`
 
 You should be taken to the mysql installation screen (it's pinkish) where you'll be asked to choose a mysql root password. I set my root password to be `root`.
 
@@ -154,8 +154,8 @@ NOTICE: a2enconf php7.0-fpm
 
 At this point, you should be able to access the index.html file located at the webroot, you can do this a number of ways:
 
-1. `**ubuntu@ubuntu-xenial:~$** wget -qO- 127.0.0.1`
-2. `**ubuntu@ubuntu-xenial:~$** curl 127.0.0.1`
+1. **ubuntu@ubuntu-xenial:~$** `wget -qO- 127.0.0.1`
+2. **ubuntu@ubuntu-xenial:~$** `curl 127.0.0.1`
 
 From Vagrant's [getting-started](https://www.vagrantup.com/intro/getting-started/provisioning.html):
 
