@@ -1,4 +1,5 @@
 1. Installing and configuring Vagrant
+=====================================
 	- Download: https://www.vagrantup.com/downloads.html
 		* If you're using Windows, you may need to log out of your user profile then log back in to get it working.
 2. mkdir vagrant && cd vagrant && vagrant init hashicorp/precise64 && vagrant up
