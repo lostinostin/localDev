@@ -27,7 +27,7 @@ Configuring Vagrant
 
 At this point, you should have a couple of things in your `vagrantUbuntuXenial` directory:
 
-	$ ls -a vagrant
+	$ ls -a vagrantUbuntuXenial
 	.		..		.vagrant	Vagrantfile
 
 The configuration file for Vagrant is the `Vagrantfile`, which is what you'll need to edit. Again, open this file up with your favorite text editor (I highly recommend [sublime](https://www.sublimetext.com/Sublime%20Text%201.4%20Setup.exe))
