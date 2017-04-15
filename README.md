@@ -105,7 +105,7 @@ if ! [ -L /var/www ]; then
 fi
 ```
 
-The tl;dr of this script is that it allows us to set the username:password to vagrant:vagrant. Without this, we would not be able to login using the default user when using VirtualBox. 
+The tl;dr of this script is that it allows us to set the username:password to vagrant:vagrant. Without this, we would not be able to login using the default user when using VirtualBox. It's also setting up the DocumentRoot to be shared with the Vagrant root. You can read more about shared folders [here](https://www.vagrantup.com/docs/synced-folders/). 
 
 Now let's start our Vagrant box by running the following in your terminal:
 
@@ -139,9 +139,11 @@ Configuring the LAMP Stack
 
 Now that you're in, run the following to install the webserver your local WordPress site will be using:
 
-`ubuntu@ubuntu-xenial:~$ sudo apt-get install -y apache2 mysql-client mysql-server php7.0 php7.0-fpm php7.0-mysql libapache2-mod-php7.0 php7.0-cli php7.0-cgi php7.0-gd`
+`**ubuntu@ubuntu-xenial:~$** sudo apt-get install -y apache2 mysql-client mysql-server php7.0 php7.0-fpm php7.0-mysql libapache2-mod-php7.0 php7.0-cli php7.0-cgi php7.0-gd`
 
-You can safely ignore this:
+You should be taken to the mysql installation screen (it's pinkish) where you'll be asked to choose a mysql root password. I set my root password to be `root`.
+
+You can safely ignore this from the output:
 
 ```
 NOTICE: Not enabling PHP 7.0 FPM by default.
@@ -152,12 +154,12 @@ NOTICE: a2enconf php7.0-fpm
 
 At this point, you should be able to access the index.html file located at the webroot, you can do this a number of ways:
 
-1. `ubuntu@ubuntu-xenial:~$ wget -qO- 127.0.0.1`
-2. `ubuntu@ubuntu-xenial:~$ curl 127.0.0.1`
+1. `**ubuntu@ubuntu-xenial:~$** wget -qO- 127.0.0.1`
+2. `**ubuntu@ubuntu-xenial:~$** curl 127.0.0.1`
 
 From Vagrant's [getting-started](https://www.vagrantup.com/intro/getting-started/provisioning.html):
 
->This works because in the shell script above we installed Apache and setup the default DocumentRoot of Apache to point to our /vagrant directory, which is the default synced folder setup by Vagrant.
+>This works because in the shell script above, we installed Apache and setup the default DocumentRoot of Apache to point to our /vagrant directory, which is the default synced folder setup by Vagrant.
 
 The guide is specifically referring to this code block in the shell script:
 
@@ -177,19 +179,20 @@ Installing WordPress
 
 >most of this was gathered from this guide [here](http://www.tecmint.com/install-wordpress-on-ubuntu-16-04-with-lamp/)
 
-First, we'll want to test whether or not PHP is working properly, so in order to do this, we'll test by creating a php info page
+First, we'll want to test whether or not PHP is working properly, so in order to do this, we'll test by creating a php info page. Open up a new terminal tab by pressing `command+t` and run the following:
 
 `cd /var/www/html && touch info.php && echo "<?php phpinfo(); ?>" >> info.php && curl -IL http://localhost/info.php`
 
 You should see the following output:
 
-```HTTP/1.1 200 OK
+```
+HTTP/1.1 200 OK
 Date: Sat, 15 Apr 2017 02:41:25 GMT
 Server: Apache/2.4.18 (Ubuntu)
 Content-Type: text/html; charset=UTF-8
 ```
 
-I've decided that it's best to download WordPress to the root then rsync the files to the WebRoot from there. To do this, run the following:
+I've decided that it's best to download WordPress to the root then rsync the files to the web root from there. To do this, run the following:
 
 `cd /vagrant/ && wget -c http://wordpress.org/latest.tar.gz && tar -xzvf latest.tar.gz && sudo rsync -av wordpress/* /var/www/html/`
 
@@ -197,26 +200,38 @@ Now we'll need to set permissions for the `www-data` user:
 
 `sudo chown -R www-data:www-data /var/www/html/ && sudo chmod -R 755 /var/www/html/`
 
-To set us up for the database creation, we'll need to edit the wp-config.php file, but WordPress only comes with a sample .php file, so let's copy it to wp-config.php with:
+>this isn't actually doing anything in Vagrant since we haven't created the `www-data` user, but it's an important step and should always be taken when installing WordPress.
+
+To set us up for the database creation, we'll need to edit the wp-config.php file, but WordPress only comes with a sample `.php` file, so let's copy it to wp-config.php with:
 
 `cp wp-config-sample.php wp-config.php`
 
-Open up the file by running `vim wp-config.php`. If you're unfamiliar with vim, you can use whatever text editor you're comfortable with. The important things we'll be doing here are updating the db credentials and salts:
+Open up the `wp-config.php` file using whatever text editor you're comfortable with. The important things we'll be doing here are updating the db credentials and salts. Feel free to use the same credentials
 
-```define('DB_NAME', 'wp_myblog');
+```
+define('DB_NAME', 'wp_myblog');
+.
+.
 define('DB_USER', 'myblog');
+.
+.
 define('DB_PASSWORD', 'myblog');
 ```
 
 You can visit this page <https://api.wordpress.org/secret-key/1.1/salt/> to obtain the salts, replace what you get from that page with the defines that are already there.
 
-Once this is done, you can access mysql by running:
+Once this is done, you can access mysql by running `mysql -u root -p`. You should see the following (you'll enter the password you chose for your mysql root user):
 
-```mysql -u root -p
+```
 Enter password:
 Welcome to the MySQL monitor.  Commands end with ; or \g.
 Your MySQL connection id is 8
 Server version: 5.7.17-0ubuntu0.16.04.2 (Ubuntu)
+```
+
+Once you're in, run the following commands. If you didn't decide to set the database, user, and password with the same values that are used in this guide, use the ones you went with, but the commands are the same.
+
+```
 mysql> CREATE DATABASE wp_myblog;
 mysql> GRANT ALL PRIVILEGES ON wp_myblog.* TO 'myblog'@'localhost' IDENTIFIED BY 'myblog';
 mysql> FLUSH PRIVILEGES;
