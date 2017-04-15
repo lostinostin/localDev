@@ -1,19 +1,45 @@
-Installing and configuring Vagrant
+Installing Vagrant
 ==========
 
-	- Download: https://www.vagrantup.com/downloads.html
-		* If you're using Windows, you may need to log out of your user profile then log back in to get it working.
-2. mkdir vagrant && cd vagrant && vagrant init hashicorp/precise64 && vagrant up
-	* Explain what this is doing
-	- To destroy this vagrant, you can run
-		$ vagrant destroy
-	- Getting started: https://www.vagrantup.com/intro/getting-started/index.html
-2a. You can also achieve the same result by running:
-		mkdir new_vagrant_folder && cd new_vagrant_folder && vagrant init && vagrant box add box/image
+Download the relevant package for your specific OS: 
+	* **Windows** [Universal (32 and 64-bit)](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3.msi)
+	
+	>If you're using Windows, you may need to log out of your user profile then log back in to get it working.
 
-2b. List of boxes can be found here: https://atlas.hashicorp.com/ubuntu/boxes/xenial64
+	* **Debian** [32-bit](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_i686.deb)|[64-bit](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.deb)
 
-3. Configuring the box
+	* **Centos** [32-bit](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_i686.rpm)|[64-bit](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.rpm)
+
+	* **Mac OS X** [Universal (32 and 64-bit)](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.dmg)
+
+Open up your terminal (you can do this by hitting *command+space* at the same time and type **terminal**) and copy and paste the following and hit enter.
+
+`mkdir vagrantUbuntuXenial && cd vagrantUbuntuXenial && vagrant init && vagrant box add box ubuntu/xenial64`
+
+	* This creates a working directory at the root of your home directory called `~/vagrantUbuntuXenial/`, then changes the working directory to that and initializes Vagrant, and finally adds the box `ubuntu/xenial64`.
+	- To destroy this vagrant, you can run `vagrant destroy`
+	- For more information on getting started, head [here](https://www.vagrantup.com/intro/getting-started/index.html)
+	- Here's a [list of available boxes](https://atlas.hashicorp.com/ubuntu/boxes/xenial64)
+
+Configuring the box
+==========
+
+At this point, you should have 
+
+```Vagrant.configure("2") do |config|
+
+  config.vm.box = "ubuntu/xenial64"
+  config.vm.box_check_update = true
+  config.vm.network "forwarded_port", guest: 80, host: 8080
+
+  config.vm.provider "virtualbox" do |vb|
+    vb.gui = true
+    vb.memory = "512"
+  end
+
+  config.vm.provision :shell, path: "bootstrap.sh"
+end
+```
 	
 	Vagrant.configure("2") do |config|
 
@@ -121,20 +147,7 @@ fi
 
 Here's my config file:
 
-```Vagrant.configure("2") do |config|
 
-  config.vm.box = "ubuntu/xenial64"
-  config.vm.box_check_update = true
-  config.vm.network "forwarded_port", guest: 80, host: 8080
-
-  config.vm.provider "virtualbox" do |vb|
-    vb.gui = true
-    vb.memory = "512"
-  end
-
-  config.vm.provision :shell, path: "bootstrap.sh"
-end
-```
 
 6. Once your logged into the machine in VirtualBox (you can do this by simply running `vagrant ssh`), run the following:
 
