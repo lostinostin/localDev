@@ -2,15 +2,15 @@ Installing Vagrant
 ==========
 
 Download the relevant package for your specific OS: 
-	* **Windows** [Universal (32 and 64-bit)](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3.msi)
+**Windows** [Universal (32 and 64-bit)](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3.msi)
 	
-	>If you're using Windows, you may need to log out of your user profile then log back in to get it working.
+>If you're using Windows, you may need to log out of your user profile then log back in to get it working.
 
-	* **Debian** [32-bit](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_i686.deb)|[64-bit](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.deb)
+**Debian** [32-bit](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_i686.deb)|[64-bit](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.deb)
 
-	* **Centos** [32-bit](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_i686.rpm)|[64-bit](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.rpm)
+**Centos** [32-bit](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_i686.rpm)|[64-bit](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.rpm)
 
-	* **Mac OS X** [Universal (32 and 64-bit)](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.dmg)
+**Mac OS X** [Universal (32 and 64-bit)](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.dmg)
 
 Open up your terminal (you can do this by hitting *command+space* at the same time and type **terminal**) and copy and paste the following and hit enter.
 
