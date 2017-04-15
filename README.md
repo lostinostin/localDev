@@ -13,7 +13,7 @@ Download the relevant package for your specific OS:
 
 **Mac OS X** [Universal (32 and 64-bit)](https://releases.hashicorp.com/vagrant/1.9.3/vagrant_1.9.3_x86_64.dmg)
 
-Open up your terminal (you can do this by hitting *command+space* at the same time and type **terminal**) and copy and paste the following and hit enter.
+Now open up your terminal (you can do this by hitting *command+space* at the same time and type **terminal** if you're using a Mac), copy and paste the following and hit enter.
 
 `mkdir vagrantUbuntuXenial && cd vagrantUbuntuXenial && vagrant init && vagrant box add box ubuntu/xenial64`
 
@@ -22,12 +22,20 @@ Open up your terminal (you can do this by hitting *command+space* at the same ti
 + For more information on getting started, head [here](https://www.vagrantup.com/intro/getting-started/index.html)
 + Here's a [list of available boxes](https://atlas.hashicorp.com/ubuntu/boxes/xenial64)
 
-Configuring the box
+Configuring Vagrant
 ==========
 
-At this point, you should have 
+At this point, you should have a couple of things in your `vagrantUbuntuXenial` directory:
 
-```Vagrant.configure("2") do |config|
+	$ ls -a vagrant
+	.		..		.vagrant	Vagrantfile
+
+The configuration file for Vagrant is the `Vagrantfile`, which is what you'll need to edit. Again, open this file up with your favorite text editor (I highly recommend [sublime](https://www.sublimetext.com/Sublime%20Text%201.4%20Setup.exe))
+
+Once you have the file open, delete it's contents and replace it with the following:
+
+```
+Vagrant.configure("2") do |config|
 
   config.vm.box = "ubuntu/xenial64"
   config.vm.box_check_update = true
@@ -41,64 +49,15 @@ At this point, you should have
   config.vm.provision :shell, path: "bootstrap.sh"
 end
 ```
-	
-	Vagrant.configure("2") do |config|
 
-  		config.vm.box = "ubuntu/xenial64"
+Since the ubuntu/xenial box is not actively maintained, there's a [bug](https://bugs.launchpad.net/cloud-images/+bug/1569237) that needs to be addressed, we can can include the [fix](https://github.com/joelhandwell/ubuntu_vagrant_boxes/blob/master/u16/Vagrantfile) in our provisioning script labelled `bootstrap.sh`. To create the file, run the following in your terminal:
 
-  		config.vm.box_check_update = true
+`touch /vagrantUbuntuXenial/bootstrap.sh`
 
-  		config.vm.network "forwarded_port", guest: 80, host: 8080
+Now open the file, copy the following code, and paste it into the file.
 
-	end
-4. $ vagrant up && vagrant ssh
-	
-4a. If you get the following error:
-
-There is a syntax error in the following Vagrantfile. The syntax error
-message is reproduced below for convenience:
-
-/Users/your.user/vagrant/Vagrantfile:72: syntax error, unexpected end-of-input, expecting keyword_end
-
-It's likely the case you enabled the following option in your Vagrantfile
-
-  config.vm.provider "virtualbox" do |vb|
-
-and forgot to uncomment the # end statement
-
-4b. If you already have a vagrant running, you may see the following error when attempting to run a second vagrant:
-
-	$ vagrant up
-	Bringing machine 'default' up with 'virtualbox' provider...
-	Vagrant cannot forward the specified ports on this VM, since they
-	would collide with some other application that is already listening
-	on these ports. The forwarded port to 2222 is already in use
-	on the host machine.
-
-	To fix this, modify your current project's Vagrantfile to use another
-	port. Example, where '1234' would be replaced by a unique host port:
-
-	  config.vm.network :forwarded_port, guest: 22, host: 1234
-
-	Sometimes, Vagrant will attempt to auto-correct this for you. In this
-	case, Vagrant was unable to. This is usually because the guest machine
-	is in a state which doesn't allow modifying port forwarding. You could
-	try 'vagrant reload' (equivalent of running a halt followed by an up)
-	so vagrant can attempt to auto-correct this upon booting. Be warned
-	that any unsaved work might be lost.
-
-Do exactly what it says, then run:
-
-	$ vagrant reload
-
-You'll see that it fixes this issue automatically:
-
-	`==> default: Fixed port collision for 22 => 2222. Now on port 2200.`
-
-
-5. (Provisioning) Since we share folders, it matters not whether you're ssh'd in or writing it to the root (defined by where the Vagrantfile is located), you'll need to write a file called `bootstrap.sh` containing the following content:
-
-```#!/usr/bin/env bash
+```
+#!/usr/bin/env bash
 
 ### The following addresses the bug in ubuntu/xenial vagrant boxes that prevents you from logging in through VirtualBox 	###
 ### Source: https://github.com/joelhandwell/ubuntu_vagrant_boxes/blob/master/u16/Vagrantfile 								###
@@ -146,17 +105,46 @@ if ! [ -L /var/www ]; then
 fi
 ```
 
-Here's my config file:
+The tl;dr of this script is that it allows us to set the username:password to vagrant:vagrant. Without this, we would not be able to login using the default user when using VirtualBox. 
+
+Now let's start our Vagrant box by running the following in your terminal:
+
+`vagrant up`
+
+You should see a bunch of output. Once that's complete, go ahead and ssh into your Vagrant box, you should see the following:
+
+>**NOTE**: I will be prepending **ubuntu@ubuntu-xenial:~$** with each command that needs to be ran from the Xenial box 
+
+```
+$ vagrant ssh
+Welcome to Ubuntu 16.04.2 LTS (GNU/Linux 4.4.0-72-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/advantage
+
+  Get cloud support with Ubuntu Advantage Cloud Guest:
+    http://www.ubuntu.com/business/services/cloud
+
+3 packages can be updated.
+0 updates are security updates.
 
 
+Last login: Sat Apr 15 01:42:24 2017 from 10.0.2.2
+ubuntu@ubuntu-xenial:~$
+```
 
-6. Once your logged into the machine in VirtualBox (you can do this by simply running `vagrant ssh`), run the following:
+Configuring the LAMP Stack
+==========
 
-`sudo apt-get install -y apache2 mysql-client mysql-server php7.0 php7.0-fpm php7.0-mysql libapache2-mod-php7.0 php7.0-cli php7.0-cgi php7.0-gd`
+Now that you're in, run the following to install the webserver your local WordPress site will be using:
 
-Here is some important output:
+`ubuntu@ubuntu-xenial:~$ sudo apt-get install -y apache2 mysql-client mysql-server php7.0 php7.0-fpm php7.0-mysql libapache2-mod-php7.0 php7.0-cli php7.0-cgi php7.0-gd`
 
-```NOTICE: Not enabling PHP 7.0 FPM by default.
+You can safely ignore this:
+
+```
+NOTICE: Not enabling PHP 7.0 FPM by default.
 NOTICE: To enable PHP 7.0 FPM in Apache2 do:
 NOTICE: a2enmod proxy_fcgi setenvif
 NOTICE: a2enconf php7.0-fpm
@@ -164,8 +152,8 @@ NOTICE: a2enconf php7.0-fpm
 
 At this point, you should be able to access the index.html file located at the webroot, you can do this a number of ways:
 
-1. `wget -qO- 127.0.0.1`
-2. `curl 127.0.0.1`
+1. `ubuntu@ubuntu-xenial:~$ wget -qO- 127.0.0.1`
+2. `ubuntu@ubuntu-xenial:~$ curl 127.0.0.1`
 
 From Vagrant's [getting-started](https://www.vagrantup.com/intro/getting-started/provisioning.html):
 
@@ -173,17 +161,21 @@ From Vagrant's [getting-started](https://www.vagrantup.com/intro/getting-started
 
 The guide is specifically referring to this code block in the shell script:
 
-```if ! [ -L /var/www ]; then
+```
+if ! [ -L /var/www ]; then
   rm -rf /var/www
   ln -fs /vagrant /var/www
 fi
 ```
 
-**Note**: we didn't install Apache in our shell script in this example, but directly from the box.
+>**NOTE**: we didn't install Apache in our shell script in this example, but directly from the box once ssh'd in
 
 You can also visit the webroot from your browser at this point, just head to <http://localhost:8080>
 
-7. Installing WordPress (most of this was gathered from this guide [here](http://www.tecmint.com/install-wordpress-on-ubuntu-16-04-with-lamp/))
+Installing WordPress
+==========
+
+>most of this was gathered from this guide [here](http://www.tecmint.com/install-wordpress-on-ubuntu-16-04-with-lamp/)
 
 First, we'll want to test whether or not PHP is working properly, so in order to do this, we'll test by creating a php info page
 
@@ -238,3 +230,36 @@ Once you've done this, you'll need to restart both apache and mysql, you can do 
 At this point, you'll be able to head to your browser to finish the installation of WordPress:
 
 <http://localhost:8080/>
+
+
+Errors
+==========
+
+If you already have a vagrant running, you may see the following error when attempting to run a second vagrant:
+
+	$ vagrant up
+	Bringing machine 'default' up with 'virtualbox' provider...
+	Vagrant cannot forward the specified ports on this VM, since they
+	would collide with some other application that is already listening
+	on these ports. The forwarded port to 2222 is already in use
+	on the host machine.
+
+	To fix this, modify your current project's Vagrantfile to use another
+	port. Example, where '1234' would be replaced by a unique host port:
+
+	  config.vm.network :forwarded_port, guest: 22, host: 1234
+
+	Sometimes, Vagrant will attempt to auto-correct this for you. In this
+	case, Vagrant was unable to. This is usually because the guest machine
+	is in a state which doesn't allow modifying port forwarding. You could
+	try 'vagrant reload' (equivalent of running a halt followed by an up)
+	so vagrant can attempt to auto-correct this upon booting. Be warned
+	that any unsaved work might be lost.
+
+Do exactly what it says, then run:
+
+	$ vagrant reload
+
+You'll see that it fixes this issue automatically:
+
+	`==> default: Fixed port collision for 22 => 2222. Now on port 2200.`
